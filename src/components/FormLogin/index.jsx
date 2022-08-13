@@ -1,44 +1,38 @@
 import { LoginStyled } from "./styles";
 import Logo from "../../assets/Logo.svg";
-import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
+import { schemaLogin } from "../../validators/validators";
 
-const LoginPage = ({ setLoading }) => {
-  const formSchema = yup.object().shape({
-    email: yup.string().required("Email obrigatório").email("Email inválido"),
-    password: yup.string().required("Senha obrigatória"),
-  });
+const LoginPage = () => {
+  const {navigate} = useContext(UserContext)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(formSchema),
+    resolver: yupResolver(schemaLogin),
   });
 
   const submitFunction = async (data) => {
     const response = await api.post("/sessions", data).catch((err) => err);
-    console.log(response);
     if (response.status === 200) {
-      localStorage.setItem("@kenzie-hub:token", response.data.token);
+      localStorage.setItem("@kenzie-hub:token", JSON.stringify(response.data.token));
       localStorage.setItem(
         "@kenzie-hub:user",
-        JSON.stringify(response.data.user)
+        JSON.stringify(response.data.user.id)
       );
       toast.success("Login efetuado com sucesso");
-      setLoading(true);
       navigate("/home");
     } else {
       toast.error("Email ou senha inválidos, tente novamente");
     }
   };
-
-  const navigate = useNavigate();
 
   return (
     <LoginStyled>

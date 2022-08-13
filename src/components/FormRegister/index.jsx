@@ -1,41 +1,23 @@
 import Logo from "../../assets/Logo.svg";
 import { RegisterStyled } from "./styles";
-import * as yup from "yup";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
 import api from "../../services/api";
 import toast from "react-hot-toast";
+import { schemaRegister } from "../../validators/validators";
+import { useContext } from "react";
+import { UserContext } from "../../contexts/UserContext";
 
 const RegisterPage = () => {
-  const formSchema = yup.object().shape({
-    name: yup.string().required("Nome obrigatório"),
-    email: yup.string().required("Email obrigatório").email("Email inválido"),
-    password: yup
-      .string()
-      .required("Senha obrigatório")
-      .min(8, "senha precisa ter mínimo 8 caracteres")
-      .matches(
-        /^(?=.*\d)(?=.*[$*&@#])[0-9a-zA-Z$*&@#]{8,}$/,
-        "Sua senha deve conter pelo um número e um símbolo especial"
-      ),
-    confirmPasseword: yup
-      .string()
-      .required("Confirmação de senha obrigatória")
-      .oneOf([yup.ref("password"), null], "Senhas não combinam"),
-    bio: yup.string().required("Bio obrigatória"),
-    contact: yup.string().required("Contato obrigatório"),
-  });
+  const {navigate} = useContext(UserContext)
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(formSchema),
+    resolver: yupResolver(schemaRegister),
   });
-
-  const navigate = useNavigate();
 
   const userRegister = async (data) => {
     const response = await api
