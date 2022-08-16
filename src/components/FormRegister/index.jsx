@@ -2,14 +2,12 @@ import Logo from "../../assets/Logo.svg";
 import { RegisterStyled } from "./styles";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import api from "../../services/api";
-import toast from "react-hot-toast";
 import { schemaRegister } from "../../validators/validators";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 
 const RegisterPage = () => {
-  const {navigate} = useContext(UserContext)
+  const {navigate, userRegister} = useContext(UserContext)
 
   const {
     register,
@@ -18,26 +16,6 @@ const RegisterPage = () => {
   } = useForm({
     resolver: yupResolver(schemaRegister),
   });
-
-  const userRegister = async (data) => {
-    const response = await api
-      .post("/users", {
-        email: data.email,
-        password: data.password,
-        name: data.name,
-        bio: data.bio,
-        contact: data.contact,
-        course_module: data.course_module,
-      })
-      .catch((err) => err);
-
-    if (response.status === 201) {
-      toast.success("Cadastro realizado com sucesso!");
-      navigate("/");
-    } else {
-      toast.error("Algo deu errado, tente novamente mais tarde");
-    }
-  };
 
   return (
     <RegisterStyled>

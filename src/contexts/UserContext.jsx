@@ -15,8 +15,8 @@ const UserProvider = ({ children }) => {
   const token = JSON.parse(localStorage.getItem("@kenzie-hub:token"));
 
   useEffect(() => {
-    setLoading(true)
-    if(id){
+    setLoading(true);
+    if (id) {
       api
         .get(`/users/${id}`)
         .then((res) => {
@@ -47,6 +47,44 @@ const UserProvider = ({ children }) => {
       });
   };
 
+  const userRegister = async (data) => {
+    const response = await api
+      .post("/users", {
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        bio: data.bio,
+        contact: data.contact,
+        course_module: data.course_module,
+      })
+      .catch((err) => err);
+
+    if (response.status === 201) {
+      toast.success("Cadastro realizado com sucesso!");
+      navigate("/");
+    } else {
+      toast.error("Algo deu errado, tente novamente mais tarde");
+    }
+  };
+
+  const userLogin = async (data) => {
+    const response = await api.post("/sessions", data).catch((err) => err);
+    if (response.status === 200) {
+      localStorage.setItem(
+        "@kenzie-hub:token",
+        JSON.stringify(response.data.token)
+      );
+      localStorage.setItem(
+        "@kenzie-hub:user",
+        JSON.stringify(response.data.user.id)
+      );
+      toast.success("Login efetuado com sucesso");
+      navigate("/home");
+    } else {
+      toast.error("Email ou senha inválidos, tente novamente");
+    }
+  };
+
   return (
     <UserContext.Provider
       value={{
@@ -61,7 +99,9 @@ const UserProvider = ({ children }) => {
         isModal,
         setIsModal,
         token,
-        removeTech
+        removeTech,
+        userRegister,
+        userLogin,
       }}
     >
       {children}
