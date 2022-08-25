@@ -1,18 +1,74 @@
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
 
-export const UserContext = createContext({});
+interface ProviderProps {
+  children: ReactNode;
+}
 
-const UserProvider = ({ children }) => {
+export interface DataRegisterProps {
+  email: string;
+  password: string;
+  name: string;
+  bio: string;
+  contact: string;
+  course_module: string;
+  confirmPasseword: string;
+}
+
+export interface DataLoginProps {
+  email: string;
+  password: string;
+}
+
+interface TechState {
+  id: string;
+  title: string;
+  status: string;
+}
+
+interface UserState {
+  id: string;
+  name: string;
+  course_module: string;
+  bio: string;
+  contact: string;
+  techs: TechState;
+}
+
+interface ListProvider {
+  loading: boolean;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  logout: () => void;
+  tech: TechState[];
+  setTech: React.Dispatch<React.SetStateAction<TechState[]>>;
+  user: UserState;
+  id: string;
+  isModal: boolean;
+  setIsModal: React.Dispatch<React.SetStateAction<boolean>>;
+  token: string;
+  removeTech: (id: string) => void;
+  userRegister: (data: DataRegisterProps) => void;
+  userLogin: (data: DataLoginProps) => void;
+  whoModal: string;
+  setWhoModal: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const UserContext = createContext<ListProvider>({} as ListProvider);
+
+const UserProvider = ({ children }: ProviderProps) => {
   const [loading, setLoading] = useState(false);
-  const [tech, setTech] = useState([]);
-  const [user, setUser] = useState({});
   const [isModal, setIsModal] = useState(false);
+  const [whoModal, setWhoModal] = useState("");
+  const [tech, setTech] = useState<TechState[]>([]);
+  const [user, setUser] = useState<UserState>({} as UserState);
 
-  const id = JSON.parse(localStorage.getItem("@kenzie-hub:user"));
-  const token = JSON.parse(localStorage.getItem("@kenzie-hub:token"));
+  const localId = localStorage.getItem("@kenzie-hub:user");
+  const id = localId ? JSON.parse(localId) : null;
+
+  const localToken = localStorage.getItem("@kenzie-hub:token");
+  const token = localToken ? JSON.parse(localToken) : null;
 
   useEffect(() => {
     setLoading(true);
@@ -36,18 +92,18 @@ const UserProvider = ({ children }) => {
     navigate("/");
   };
 
-  const removeTech = (id) => {
+  const removeTech = (id: string) => {
     api
       .delete(`/users/techs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then((res) => {
+      .then(() => {
         setTech(tech.filter((elem) => elem.id !== id));
         toast.success("Tecnologia removida com sucesso");
       });
   };
 
-  const userRegister = async (data) => {
+  const userRegister = async (data: DataRegisterProps) => {
     const response = await api
       .post("/users", {
         email: data.email,
@@ -67,7 +123,8 @@ const UserProvider = ({ children }) => {
     }
   };
 
-  const userLogin = async (data) => {
+  const userLogin = async (data: DataLoginProps) => {
+    console.log(data);
     const response = await api.post("/sessions", data).catch((err) => err);
     if (response.status === 200) {
       localStorage.setItem(
@@ -95,13 +152,14 @@ const UserProvider = ({ children }) => {
         setTech,
         user,
         id,
-        navigate,
         isModal,
         setIsModal,
         token,
         removeTech,
         userRegister,
         userLogin,
+        whoModal,
+        setWhoModal
       }}
     >
       {children}

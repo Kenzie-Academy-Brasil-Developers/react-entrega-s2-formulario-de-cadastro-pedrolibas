@@ -1,19 +1,21 @@
 import { LoginStyled } from "./styles";
-import Logo from "../../assets/Logo.svg";
+import Logo from "../../assets/logo.svg";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { DataLoginProps, UserContext } from "../../contexts/UserContext";
 import { schemaLogin } from "../../validators/validators";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
-  const {navigate, userLogin} = useContext(UserContext)
+  const {userLogin} = useContext(UserContext)
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<DataLoginProps>({
     resolver: yupResolver(schemaLogin),
   });
 

@@ -10,10 +10,11 @@ const Main = () => {
   return (
     <MainStyled>
       <section>
-        <h2>Olá, {user && user.name}</h2>
-        <span>{user && user.course_module}</span>
+        <h2>Olá, {user.name}</h2>
+        <span>{user.course_module}</span>
       </section>
-      {tech.length === 0 ? <Empty /> : <List />}
+      {tech.length === 0 ? <Empty who={"tecnologias"}/> : <List who={"tecnologias"}/>}
+      <Empty who={"projetos"}/>
     </MainStyled>
   );
 };

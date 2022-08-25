@@ -3,10 +3,16 @@ import { BsTrash } from "react-icons/bs";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
 
-const Card = ({title, status, id}) => {
+interface DataProps {
+  title: string,
+  status: string,
+  id: string
+}
+
+const Card = ({title, status, id}: DataProps) => {
   const {removeTech} = useContext(UserContext)
   return (
-    <CardStyled>
+    <CardStyled style={{}}>
       <section>
         <h5>{title}</h5>
         <div>

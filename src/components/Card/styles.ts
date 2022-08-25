@@ -7,7 +7,7 @@ export const CardStyled = styled.li`
   color: var(--color-white);
   border-radius: 4px;
   margin: 0 auto;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.3rem;
 
   display: flex;
   align-items: center;

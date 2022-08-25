@@ -1,19 +1,20 @@
-import Logo from "../../assets/Logo.svg";
+import Logo from "../../assets/logo.svg";
 import { RegisterStyled } from "./styles";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { schemaRegister } from "../../validators/validators";
 import { useContext } from "react";
-import { UserContext } from "../../contexts/UserContext";
+import { DataRegisterProps, UserContext } from "../../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
-  const {navigate, userRegister} = useContext(UserContext)
-
+  const { userRegister } = useContext(UserContext);
+  const navigate = useNavigate();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<DataRegisterProps>({
     resolver: yupResolver(schemaRegister),
   });
 

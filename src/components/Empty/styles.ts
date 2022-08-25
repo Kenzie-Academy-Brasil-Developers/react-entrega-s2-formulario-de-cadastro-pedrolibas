@@ -7,6 +7,7 @@ export const EmptyStyled = styled.div`
   div {
     width: 60%;
     margin: 2rem auto;
+
     h3 {
       font-size: 1.125rem;
       font-weight: 700;

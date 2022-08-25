@@ -8,6 +8,11 @@ import api from "../../services/api";
 import toast from "react-hot-toast";
 import { schemaNew } from "../../validators/validators";
 
+interface DataNewTech {
+  title: string,
+  status: string
+}
+
 const ModalNew = () => {
   const { setIsModal, setTech, token } = useContext(UserContext);
 
@@ -15,11 +20,11 @@ const ModalNew = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
+  } = useForm<DataNewTech>({
     resolver: yupResolver(schemaNew),
   });
 
-  const newTech = (data) => {
+  const newTech = (data: DataNewTech) => {
     api
       .post("/users/techs", data, {
         headers: { Authorization: `Bearer ${token}` },

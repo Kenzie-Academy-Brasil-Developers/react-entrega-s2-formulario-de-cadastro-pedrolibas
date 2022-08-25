@@ -1,7 +1,9 @@
 import { HeaderStyled } from "./styles";
-import Logo from "../../assets/Logo.svg";
+import Logo from "../../assets/logo.svg";
 import { useContext } from "react";
 import { UserContext } from "../../contexts/UserContext";
+
+
 
 const Header = () => {
   const { logout } = useContext(UserContext);
